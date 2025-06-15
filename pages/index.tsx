@@ -1,4 +1,3 @@
-// pages/index.tsx
 "use client";
 
 import Image from "next/image";
@@ -11,8 +10,6 @@ import DailyView from "@/components/DailyView";
 import SlideMenu from "@/components/SlideMenu";
 import DevSection from "@/components/DevSection";
 import TeamSection from "@/components/TeamSection";
-
-
 
 const TIMEZONE_OFFSET_KST: { [key: string]: number } = {
   UTC: -9,
@@ -32,7 +29,6 @@ const TIMEZONE_OFFSET_KST: { [key: string]: number } = {
 };
 
 export default function Home() {
-  // ✅ useRef 선언은 반드시 컴포넌트 최상단에서!
   const projectRef: React.RefObject<HTMLDivElement> = useRef(null);
   const thanksRef: React.RefObject<HTMLDivElement> = useRef(null);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -47,6 +43,7 @@ export default function Home() {
   };
 
   const getOffset = (target: string) => TIMEZONE_OFFSET_KST[target] * 3600;
+
   const formatTimestamp = (timestamp: number) => {
     const offset = getOffset(timezone);
     const local = new Date((timestamp + offset) * 1000);
@@ -62,8 +59,8 @@ export default function Home() {
     const oneHourAgo = now - 3600;
     const twoHoursAgo = now - 7200;
     return {
-      last1Hour: data.filter(d => d.Timestamp >= oneHourAgo && d.Timestamp <= now),
-      last2to1Hour: data.filter(d => d.Timestamp >= twoHoursAgo && d.Timestamp < oneHourAgo),
+      last1Hour: data.filter((d) => d.Timestamp >= oneHourAgo && d.Timestamp <= now),
+      last2to1Hour: data.filter((d) => d.Timestamp >= twoHoursAgo && d.Timestamp < oneHourAgo),
     };
   };
 
@@ -78,7 +75,8 @@ export default function Home() {
   const getChangeRate = () => {
     const { last1Hour, last2to1Hour } = filterByHourRanges();
     const sum = (arr: any[], key: string) => arr.reduce((a, b) => a + (b[key] || 0), 0);
-    const calcRate = (a: number, b: number) => (b === 0 ? (a === 0 ? 0 : Infinity) : ((a - b) / b) * 100);
+    const calcRate = (a: number, b: number) =>
+      b === 0 ? (a === 0 ? 0 : Infinity) : ((a - b) / b) * 100;
     return {
       bidsRate: calcRate(sum(last1Hour, "Bids"), sum(last2to1Hour, "Bids")),
       pointsRate: calcRate(sum(last1Hour, "Points_Pool"), sum(last2to1Hour, "Points_Pool")),
@@ -166,7 +164,7 @@ export default function Home() {
         {mode === 0 ? (
           <HourlyView data={data} timezone={timezone} />
         ) : (
-          <DailyView timezone="UTC" />
+          <DailyView />
         )}
 
         {/* 섹션들 */}

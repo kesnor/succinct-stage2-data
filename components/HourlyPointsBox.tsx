@@ -65,17 +65,16 @@ export default function HourlyPointsBox({ data, timezone }: Props) {
         hour: hourStr,
         avgPoints:
           i === 24
-            ? 0.01 // 마지막 바 강제 시각화
+            ? 0.01
             : values.length > 0
             ? Number((values.reduce((sum, v) => sum + v, 0) / values.length).toFixed(2))
             : 0,
       };
     });
-  }, [data]);
+  }, [data, currentHour, currentHourTimestamp]);
 
   return (
     <div className="mt-8 border border-black rounded-xl p-4">
-      {/* ⬇️ info 아이콘과 문구 추가 */}
       <div className="mb-1 px-2 flex items-center">
         <Image
           src="/info-icon.png"
@@ -89,7 +88,6 @@ export default function HourlyPointsBox({ data, timezone }: Props) {
         </span>
       </div>
 
-      {/* 제목 */}
       <div className="mb-2 px-2">
         <h2 className="text-pink-400 font-handwriting text-lg">
           Hourly Overview (AVG Points)

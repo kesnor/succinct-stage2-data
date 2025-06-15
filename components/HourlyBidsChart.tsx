@@ -65,13 +65,13 @@ export default function HourlyBidsChart({ data, timezone }: Props) {
         hour: hourStr,
         avgBids:
           i === 24
-            ? 0.01 // 마지막 바 강제 표시
+            ? 0.01
             : values.length > 0
             ? Number((values.reduce((sum, v) => sum + v, 0) / values.length).toFixed(2))
             : 0,
       };
     });
-  }, [data]);
+  }, [data, currentHour, currentHourTimestamp]);
 
   return (
     <div className="mt-8 border border-black rounded-xl p-4">

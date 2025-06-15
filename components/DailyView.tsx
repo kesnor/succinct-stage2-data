@@ -2,11 +2,7 @@ import React, { useState, useEffect } from "react";
 import DailyBidsChart from "./DailyBidsChart";
 import DailyPointsChart from "./DailyPointsChart";
 
-type Props = {
-  timezone: string; // 여전히 유지 가능
-};
-
-export default function DailyView({ timezone }: Props) {
+export default function DailyView() {
   const [data, setData] = useState<any[]>([]);
 
   const fetchData = async () => {
