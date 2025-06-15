@@ -146,6 +146,8 @@ export default function Home() {
           bidsRate={bidsRate}
           pointsRate={pointsRate}
           setMode={setMode}
+          timezone={timezone}
+          setTimezone={setTimezone}
         />
 
         <Last5Contests

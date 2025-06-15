@@ -1,26 +1,77 @@
+"use client";
+
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import React from "react";
 
-export default function SummaryBox({ mode, bids, points, bidsRate, pointsRate, setMode }: any) {
+type Props = {
+  mode: number;
+  bids: number;
+  points: number;
+  bidsRate: number;
+  pointsRate: number;
+  timezone: string;
+  setMode: (mode: number) => void;
+  setTimezone: (tz: string) => void;
+};
+
+const timezones = ["UTC", "KST", "CST", "CET", "ICT", "WAT"];
+
+export default function SummaryBox({
+  mode,
+  bids,
+  points,
+  bidsRate,
+  pointsRate,
+  timezone,
+  setMode,
+  setTimezone,
+}: Props) {
   return (
-    <div className="border rounded-xl p-4 mt-6">
-      {/* Tabs */}
-      <div className="flex items-center gap-6 h-10 px-2">
+    <div className="border rounded-xl p-4 mt-6 w-full">
+      {/* 상단: 타이틀 + 타임존 스크롤 탭 */}
+      <div className="flex flex-col gap-2">
+        <div className="text-xl font-bold text-pink-400">Last 5 Contests</div>
+
+        <div className="overflow-x-auto whitespace-nowrap px-1">
+          {timezones.map((tz) => (
+            <button
+              key={tz}
+              onClick={() => setTimezone(tz)}
+              className={`inline-block rounded-full border px-3 py-1 mx-1 text-sm font-semibold transition-colors
+                ${
+                  timezone === tz
+                    ? "bg-pink-300 text-white border-pink-300"
+                    : "text-pink-400 border-pink-300"
+                }`}
+            >
+              {tz}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* 탭: Hourly / Daily */}
+      <div className="flex items-center gap-6 h-10 px-2 mt-4">
         <button
           onClick={() => setMode(0)}
-          className={`text-sm sm:text-base font-semibold ${mode === 0 ? "text-[#f783ac]" : "text-black"}`}
+          className={`text-sm sm:text-base font-semibold ${
+            mode === 0 ? "text-[#f783ac]" : "text-black"
+          }`}
         >
           Hourly
         </button>
         <button
           onClick={() => setMode(1)}
-          className={`text-sm sm:text-base font-semibold ${mode === 1 ? "text-[#f783ac]" : "text-black"}`}
+          className={`text-sm sm:text-base font-semibold ${
+            mode === 1 ? "text-[#f783ac]" : "text-black"
+          }`}
         >
           Daily
         </button>
       </div>
 
-      {/* Inner box */}
+      {/* 요약 데이터 박스 */}
       <div className="mt-4 w-full rounded-xl border px-2 sm:px-4 py-3 grid grid-cols-1 sm:grid-cols-2 gap-4 items-center text-[11px] sm:text-base">
         {/* Bids */}
         <div className="flex items-center justify-between gap-2 sm:gap-4 flex-wrap">
@@ -56,7 +107,9 @@ export default function SummaryBox({ mode, bids, points, bidsRate, pointsRate, s
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className={`text-xs sm:text-base ${bidsRate >= 0 ? "text-green-600" : "text-red-600"}`}
+                className={`text-xs sm:text-base ${
+                  bidsRate >= 0 ? "text-green-600" : "text-red-600"
+                }`}
               >
                 {Math.abs(bidsRate).toFixed(2)}%
               </motion.span>
@@ -98,7 +151,9 @@ export default function SummaryBox({ mode, bids, points, bidsRate, pointsRate, s
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.3 }}
-                className={`text-xs sm:text-base ${pointsRate >= 0 ? "text-green-600" : "text-red-600"}`}
+                className={`text-xs sm:text-base ${
+                  pointsRate >= 0 ? "text-green-600" : "text-red-600"
+                }`}
               >
                 {Math.abs(pointsRate).toFixed(2)}%
               </motion.span>
