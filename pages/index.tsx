@@ -131,10 +131,6 @@ export default function Home() {
               <span className="text-2xl font-bold">Succinct</span>
             </div>
             <div className="flex items-center gap-3">
-              <Link href="https://x.com/kesoonho" className="flex items-center gap-1 text-xl">
-                <span className="font-mono">x:</span>
-                <span className="font-mono">@kesoonho</span>
-              </Link>
               <button onClick={() => setMenuOpen(true)}>
                 <Image src="/menu-icon.png" width={24} height={24} alt="menu" className="h-10 w-10" />
               </button>
