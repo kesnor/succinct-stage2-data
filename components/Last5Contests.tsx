@@ -8,17 +8,15 @@ const TIMEZONES = ["UTC", "KST", "CST", "CET", "ICT", "WAT"];
 export default function Last5Contests({ display, timezone, setTimezone, formatTimestamp }: any) {
   return (
     <div className="rounded-xl border p-4 mt-6 w-full max-h-none overflow-y-visible">
-      {/* 타이틀 + 타임존 버튼 (2줄 구성) */}
-      <div className="w-full overflow-x-auto overflow-y-visible mb-3">
-        <div className="inline-flex flex-wrap items-center gap-2 min-w-fit px-1 pb-1">
-          <div className="text-base font-bold text-pink-400 whitespace-nowrap mr-4">
-            Last 5 Contests
-          </div>
+      {/* Title + Timezone (한 줄, 오른쪽 정렬 + 줄바꿈 대응) */}
+      <div className="flex flex-wrap justify-between items-center w-full gap-2 mb-3">
+        <span className="text-base font-bold text-pink-400">Last 5 Contests</span>
+        <div className="flex flex-wrap justify-end gap-1">
           {TIMEZONES.map((tz) => (
             <button
               key={tz}
               onClick={() => setTimezone(tz)}
-              className={`rounded-full border px-3 py-1 text-sm font-semibold transition-colors ${
+              className={`rounded-full border px-2 py-[2px] text-[11px] font-semibold transition-colors ${
                 timezone === tz
                   ? "bg-pink-300 text-white border-pink-300"
                   : "text-pink-400 border-pink-300"
@@ -30,7 +28,7 @@ export default function Last5Contests({ display, timezone, setTimezone, formatTi
         </div>
       </div>
 
-      {/* 데이터 영역 */}
+      {/* 데이터 테이블 영역 */}
       <div className="flex flex-col border px-2 text-xs md:text-base">
         {/* 헤더 */}
         <div className="grid grid-cols-6 place-items-center font-semibold">
