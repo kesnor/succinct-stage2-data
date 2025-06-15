@@ -57,7 +57,7 @@ export default function DailyPointsChart({ data }: Props) {
           className="mr-1"
         />
         <span style={{ color: "#868e96", fontSize: "0.85rem" }}>
-          Daily Overview data updates at 00:00 UTC.
+          Daily data updates at 00:00 UTC.
         </span>
       </div>
 

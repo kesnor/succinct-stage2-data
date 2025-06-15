@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState, MutableRefObject } from "react";
+import { useEffect, useRef, useState, useMemo, MutableRefObject } from "react";
 import SummaryBox from "@/components/SummaryBox";
 import Last5Contests from "@/components/Last5Contests";
 import HourlyView from "@/components/HourlyView";
@@ -15,7 +15,7 @@ const TIMEZONE_OFFSET_KST: { [key: string]: number } = {
   UTC: -9,
   KST: 0,
   CST: -1,
-  CET: ((): number => {
+  CET: (() => {
     const now = new Date();
     const start = new Date(Date.UTC(now.getUTCFullYear(), 2, 31));
     start.setUTCDate(31 - start.getUTCDay());
@@ -54,32 +54,31 @@ export default function Home() {
     return `[${mm}/${dd} ${hh}:${min}]`;
   };
 
-  const filterByHourRanges = () => {
+  const getRate = (mode: number) => {
     const now = Math.floor(Date.now() / 1000);
-    const oneHourAgo = now - 3600;
-    const twoHoursAgo = now - 7200;
+    const range = mode === 0 ? 3600 : 86400;
+    const filtered = data.filter((d) => d.Timestamp >= now - range && d.Timestamp <= now);
+
     return {
-      last1Hour: data.filter((d) => d.Timestamp >= oneHourAgo && d.Timestamp <= now),
-      last2to1Hour: data.filter((d) => d.Timestamp >= twoHoursAgo && d.Timestamp < oneHourAgo),
+      bids: filtered.reduce((s, i) => s + i.Bids, 0),
+      points: filtered.reduce((s, i) => s + i.Points_Pool, 0),
     };
   };
 
-  const getRate = () => {
-    const { last1Hour } = filterByHourRanges();
-    return {
-      bids: last1Hour.reduce((s, i) => s + i.Bids, 0),
-      points: last1Hour.reduce((s, i) => s + i.Points_Pool, 0),
-    };
-  };
+  const getChangeRate = (mode: number) => {
+    const now = Math.floor(Date.now() / 1000);
+    const unit = mode === 0 ? 3600 : 86400;
 
-  const getChangeRate = () => {
-    const { last1Hour, last2to1Hour } = filterByHourRanges();
+    const current = data.filter((d) => d.Timestamp >= now - unit && d.Timestamp < now);
+    const previous = data.filter((d) => d.Timestamp >= now - 2 * unit && d.Timestamp < now - unit);
+
     const sum = (arr: any[], key: string) => arr.reduce((a, b) => a + (b[key] || 0), 0);
     const calcRate = (a: number, b: number) =>
       b === 0 ? (a === 0 ? 0 : Infinity) : ((a - b) / b) * 100;
+
     return {
-      bidsRate: calcRate(sum(last1Hour, "Bids"), sum(last2to1Hour, "Bids")),
-      pointsRate: calcRate(sum(last1Hour, "Points_Pool"), sum(last2to1Hour, "Points_Pool")),
+      bidsRate: calcRate(sum(current, "Bids"), sum(previous, "Bids")),
+      pointsRate: calcRate(sum(current, "Points_Pool"), sum(previous, "Points_Pool")),
     };
   };
 
@@ -118,8 +117,8 @@ export default function Home() {
     }
   }, [data]);
 
-  const { bidsRate, pointsRate } = getChangeRate();
-  const { bids, points } = getRate();
+  const { bids, points } = useMemo(() => getRate(mode), [mode, data]);
+  const { bidsRate, pointsRate } = useMemo(() => getChangeRate(mode), [mode, data]);
 
   return (
     <div className="h-dvh w-dvw">
@@ -131,10 +130,10 @@ export default function Home() {
               <Image src="/slogo.svg" width={30} height={30} alt="logo" />
               <span className="text-2xl font-bold">Succinct</span>
             </div>
-            <div className="flex items-center gap-10">
+            <div className="flex items-center gap-3">
               <Link href="https://x.com/kesoonho" className="flex items-center gap-1 text-xl">
-                <span className="font-bold">x:</span>
-                <span className="font-bold">@kesoonho</span>
+                <span className="font-mono">x:</span>
+                <span className="font-mono">@kesoonho</span>
               </Link>
               <button onClick={() => setMenuOpen(true)}>
                 <Image src="/menu-icon.png" width={24} height={24} alt="menu" className="h-10 w-10" />
