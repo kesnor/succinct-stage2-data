@@ -21,7 +21,7 @@ export default function SlideMenu({ onClose, scrollToProject, scrollToThanks }: 
         <Link href="https://discord.gg/succinctlabs" className="py-2" target="_blank">
           Discord
         </Link>
-        <Link href="https://x.com/kesoonho" className="py-2" target="_blank">
+        <Link href="https://x.com/SuccinctLabs" className="py-2" target="_blank">
           X
         </Link>
 
