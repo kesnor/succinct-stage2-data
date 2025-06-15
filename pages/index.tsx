@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useRef, useState, useMemo, MutableRefObject } from "react";
 import SummaryBox from "@/components/SummaryBox";
 import Last5Contests from "@/components/Last5Contests";
