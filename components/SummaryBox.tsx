@@ -10,12 +10,8 @@ type Props = {
   points: number;
   bidsRate: number;
   pointsRate: number;
-  timezone: string;
   setMode: (mode: number) => void;
-  setTimezone: (tz: string) => void;
 };
-
-const timezones = ["UTC", "KST", "CST", "CET", "ICT", "WAT"];
 
 export default function SummaryBox({
   mode,
@@ -23,36 +19,12 @@ export default function SummaryBox({
   points,
   bidsRate,
   pointsRate,
-  timezone,
   setMode,
-  setTimezone,
 }: Props) {
   return (
     <div className="border rounded-xl p-4 mt-6 w-full">
-      {/* 상단: 타이틀 + 타임존 스크롤 탭 */}
-      <div className="flex flex-col gap-2">
-        <div className="text-xl font-bold text-pink-400">Last 5 Contests</div>
-
-        <div className="overflow-x-auto whitespace-nowrap px-1">
-          {timezones.map((tz) => (
-            <button
-              key={tz}
-              onClick={() => setTimezone(tz)}
-              className={`inline-block rounded-full border px-3 py-1 mx-1 text-sm font-semibold transition-colors
-                ${
-                  timezone === tz
-                    ? "bg-pink-300 text-white border-pink-300"
-                    : "text-pink-400 border-pink-300"
-                }`}
-            >
-              {tz}
-            </button>
-          ))}
-        </div>
-      </div>
-
       {/* 탭: Hourly / Daily */}
-      <div className="flex items-center gap-6 h-10 px-2 mt-4">
+      <div className="flex items-center gap-6 h-10 px-2">
         <button
           onClick={() => setMode(0)}
           className={`text-sm sm:text-base font-semibold ${
