@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, MutableRefObject } from "react";
 import SummaryBox from "@/components/SummaryBox";
 import Last5Contests from "@/components/Last5Contests";
 import HourlyView from "@/components/HourlyView";
@@ -29,8 +29,8 @@ const TIMEZONE_OFFSET_KST: { [key: string]: number } = {
 };
 
 export default function Home() {
-  const projectRef: React.RefObject<HTMLDivElement> = useRef(null);
-  const thanksRef: React.RefObject<HTMLDivElement> = useRef(null);
+  const projectRef = useRef<HTMLDivElement | null>(null);
+  const thanksRef = useRef<HTMLDivElement | null>(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [mode, setMode] = useState(0);
   const [timezone, setTimezone] = useState("KST");
@@ -38,7 +38,7 @@ export default function Home() {
   const [display, setDisplay] = useState<any[]>([]);
   const lastUpdateMinuteRef = useRef<number | null>(null);
 
-  const scrollToSection = (ref: React.RefObject<HTMLDivElement>) => {
+  const scrollToSection = (ref: MutableRefObject<HTMLDivElement | null>) => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
   };
 
