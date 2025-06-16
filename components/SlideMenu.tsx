@@ -31,7 +31,7 @@ export default function SlideMenu({ onClose, scrollToProject, scrollToThanks }: 
           Project Dev
         </button>
         <button onClick={scrollToThanks} className="py-2 text-left">
-          Thanks to
+          Korean members
         </button>
       </nav>
     </div>

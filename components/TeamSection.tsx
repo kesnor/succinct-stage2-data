@@ -80,7 +80,7 @@ const members: Member[] = [
 export default function TeamSection() {
   return (
     <section className="p-6 font-key">
-      <h2 className="text-xl font-bold mb-4">Thanks to Succinct Korean Members</h2>
+      <h2 className="text-xl font-bold mb-4">Succinct Korean Members</h2>
 
       <div className="grid grid-cols-2 md:grid-cols-3 gap-8 mt-10">
         {members.map((member, idx) => (
