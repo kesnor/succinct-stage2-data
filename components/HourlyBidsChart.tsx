@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useMemo } from "react";
 import Image from "next/image";
 import {
@@ -45,20 +47,25 @@ export default function HourlyBidsChart({ data, timezone }: Props) {
 
     const grouped: { [hour: string]: number[] } = {};
     for (let i = 0; i < 24; i++) {
-      const h = ((currentHour - 24 + i + 24) % 24).toString().padStart(2, "0");
-      grouped[h] = [];
+      const utcHour = (currentHour - 24 + i + 24) % 24;
+      const tzHour = (utcHour + offset + 24) % 24;
+      grouped[tzHour.toString().padStart(2, "0")] = [];
     }
 
     filtered.forEach((d) => {
       const utcHour = new Date(d.Timestamp * 1000).getUTCHours();
-      const h = utcHour.toString().padStart(2, "0");
-      grouped[h]?.push(d.Bids);
+      const tzHour = (utcHour + offset + 24) % 24;
+      const hourStr = tzHour.toString().padStart(2, "0");
+      grouped[hourStr]?.push(d.Bids);
     });
 
-    const hours = Array.from({ length: 25 }, (_, i) => (currentHour - 24 + i + 24) % 24);
+    const hours = Array.from({ length: 25 }, (_, i) => {
+      const utcHour = (currentHour - 24 + i + 24) % 24;
+      return (utcHour + offset + 24) % 24;
+    });
 
-    return hours.map((h, i) => {
-      const hourStr = h.toString().padStart(2, "0");
+    return hours.map((tzHour, i) => {
+      const hourStr = tzHour.toString().padStart(2, "0");
       const values = grouped[hourStr] || [];
 
       return {
@@ -71,7 +78,21 @@ export default function HourlyBidsChart({ data, timezone }: Props) {
             : 0,
       };
     });
-  }, [data, currentHour, currentHourTimestamp]);
+  }, [data, currentHour, currentHourTimestamp, offset]);
+
+  const CustomTooltip = ({ active, payload }: any) => {
+    if (active && payload && payload.length > 0) {
+      const hour = payload[0].payload.hour;
+      const avgBids = payload[0].value;
+      return (
+        <div style={{ backgroundColor: "white", border: "1px solid #ccc", padding: "8px" }}>
+          <div style={{ fontWeight: "bold", marginBottom: "4px" }}>{hour}</div>
+          <div style={{ color: "#f783ac" }}>avgBids : {avgBids}</div>
+        </div>
+      );
+    }
+    return null;
+  };
 
   return (
     <div className="mt-8 border border-black rounded-xl p-4">
@@ -101,9 +122,7 @@ export default function HourlyBidsChart({ data, timezone }: Props) {
               dataKey="hour"
               tick={(props) => {
                 const { x, y, payload, index } = props;
-                const utcHour = parseInt(payload.value, 10);
-                const tzHour = (utcHour + offset + 24) % 24;
-                const hourStr = tzHour.toString().padStart(2, "0");
+                const hourStr = payload.value;
 
                 const isLeft = index === 0;
                 const isRight = index === 24;
@@ -122,7 +141,7 @@ export default function HourlyBidsChart({ data, timezone }: Props) {
               }}
             />
             <YAxis />
-            <Tooltip />
+            <Tooltip content={<CustomTooltip />} />
             <Bar dataKey="avgBids" fill="#f783ac" />
           </BarChart>
         </ResponsiveContainer>
